@@ -8,7 +8,7 @@ environment:
 compose:
   files:
     - .dockerdev/compose.yaml
-  project_name: rails7_react_crud_tutorial
+  project_name: event_manager_shakapacker
 
 interaction:
   # This command spins up a Rails container with the requried dependencies (such as databases),
@@ -49,12 +49,6 @@ interaction:
         environment:
           RAILS_ENV: test
 
-  dev:
-    description: Start rails dev server for bin/dev
-    service: web
-    command: bin/dev
-    compose_run_options: [ service-ports, use-aliases ]
-
   minitest:
     description: Run minitest
     service: rails
@@ -86,12 +80,11 @@ interaction:
     command: yarn
     compose_run_options: [no-deps]
 
-  lint:
-    description: Run ESLint with Airbnb rules
-    service: rails
-    command: npm run lint
-
 provision:
-  - dip compose down --volumes
-  - /bin/bash -c "rm -rf tmp/*"
-  - dip sh -c bin/setup
+  - dip bundle install
+  - dip rails new . --skip-javascript –f --skip-git --no-skip-gemfile
+  - dip bundle add shakapacker --strict
+  - dip bundle install
+  - mv webpacker.yml config/
+  - dip rails webpacker:install
+  - dip yarn add react react-dom @babel/preset-react

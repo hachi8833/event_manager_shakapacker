@@ -5,8 +5,9 @@ x-app: &app
       RUBY_VERSION: '3.1.2'
       NODE_MAJOR: '16'
       YARN_VERSION: '1.22.17'
-  image: event-manager-tutorial:1.0.0
+  image: event_manager_shakapacker:1.0.0
   environment: &env
+    NODE_ENV: ${NODE_ENV:-development}
     RAILS_ENV: ${RAILS_ENV:-development}
   tmpfs:
     - /tmp
@@ -22,6 +23,9 @@ x-backend: &backend
     - rails_cache:/app/tmp/cache
     - assets:/app/public/assets
     - assets_builds:/app/assets/builds
+    - node_modules:/app/node_modules
+    - packs:/app/public/packs
+    - packs-test:/app/public/packs-test
     - history:/usr/local/hist
     - ./.psqlrc:/root/.psqlrc:ro
     - ./.bashrc:/root/.bashrc:ro
@@ -37,6 +41,8 @@ x-backend: &backend
     HISTFILE: /usr/local/hist/.bash_history
     IRB_HISTFILE: /usr/local/hst/.irb_history
     EDITOR: vi
+    WEBPACKER_DEV_SERVER_HOST: webpacker
+    YARN_CACHE_FOLDER: /app/node_modules/.yarn-cache
 
 services:
   rails:
@@ -45,10 +51,29 @@ services:
 
   web:
     <<: *backend
-    command: bin/dev
+    command: bin/rails s
     ports:
       - '3000:3000'
       - '35729:35729'
+    depends_on:
+      webpacker:
+        condition: service_started
+
+  webpacker:
+    <<: *app
+    command: bundle exec ./bin/webpack-dev-server
+    ports:
+      - '3035:3035'
+    volumes:
+      - ..:/app:cached
+      - bundle:/usr/local/bundle
+      - node_modules:/app/node_modules
+      - packs:/app/public/packs
+      - packs-test:/app/public/packs-test
+    environment:
+      <<: *env
+      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+      YARN_CACHE_FOLDER: /app/node_modules/.yarn-cache
 
 volumes:
   bundle:
@@ -57,3 +82,5 @@ volumes:
   assets:
   assets_builds:
   node_modules:
+  packs:
+  packs-test:

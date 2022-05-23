@@ -1,133 +1,49 @@
 # README
 
+以下のチュートリアルを進めるのに便利なDocker環境です。
+
+* [Rails 7とReactによるCRUDアプリ作成チュートリアル（翻訳）｜TechRacho by BPS株式会社](https://techracho.bpsinc.jp/?p=118031&preview=true#4-1)
+
+## 必要なもの
+
+以下のインストールが必要です。ホストOS環境はmacOSで検証していますが、Linux、Windows（WSL2）でも動くと思います。
+
+* DockerとDocker Compose環境
+* dip↓
+
+[![bibendi/dip - GitHub](https://gh-card.dev/repos/bibendi/dip.svg)](https://github.com/bibendi/dip)
+
 
 ```sh
-# Docker環境セットアップ
-dip bundle install
+# dipをインストールする
+gem install dip
 ```
+
+## セットアップ
+
+以下を実行すればセットアップが完了します。Gemfileを上書きするかどうか尋ねられたらyを入力してください（READMEの上書きはどちらでも構いません）。
 
 ```sh
-# Railsバージョン確認
-dip rails -v
+dip provision
 ```
+
+チュートリアルの[Shakapackerの場合](https://techracho.bpsinc.jp/?p=118031&preview=true#4-2)のpackage.jsonのカスタマイズ部分からチュートリアルを開始できます。
+
+以下を実行すればRailsサーバーが起動します。
 
 ```sh
-# esbuildの場合
-dip rails new . -j esbuild
+dip rails s
 ```
 
-以後の操作も、コマンド冒頭に`dip`を付ける点だけが異なります。
+チュートリアルの以後の操作では、`rails`や`npm`コマンドの冒頭に`dip`を付けるだけで同様に進められます（`touch`や`mkdir`などのシェルコマンドについては`dip`は不要です）。
 
 ```sh
 # 例
-dip bundle add shakapacker --strict
+dip yarn add prop-types
 ```
 
-なお、`yarn`は既にセットアップに含まれているので、以下は実行不要です。
+### 参考
 
-```sh
-# 実行不要
-npm i -g yarn
-```
+dip.ymlに記述されている`mv webpacker.yml config/`は、以下の問題を回避するための処置です。
 
-## Shakapackerの場合
-
-現在のセットアップはShakapackerに対応していません。
-
-* Webpacker用のcompose.ymlにする
-* compose.ymlの48行目を`command: bin/rails s`に変更する
-* webpacker.ymlファイルを手動で生成する
-
-```sh
-# （エラー回避用）
-touch app/config/webpacker.yml
-```
-
-```yaml
-x-app: &app
-  build:
-    context: .
-    args:
-      RUBY_VERSION: '3.1.2'
-      NODE_MAJOR: '16'
-      YARN_VERSION: '1.22.17'
-  image: rails7_react_crud_tutorial:1.0.0
-  environment: &env
-    NODE_ENV: ${NODE_ENV:-development}
-    RAILS_ENV: ${RAILS_ENV:-development}
-  tmpfs:
-    - /tmp
-    - /app/tmp/pids
-
-x-backend: &backend
-  <<: *app
-  stdin_open: true
-  tty: true
-  volumes:
-    - ..:/app:cached
-    - bundle:/usr/local/bundle
-    - rails_cache:/app/tmp/cache
-    - assets:/app/public/assets
-    - assets_builds:/app/assets/builds
-    - node_modules:/app/node_modules
-    - packs:/app/public/packs
-    - packs-test:/app/public/packs-test
-    - history:/usr/local/hist
-    - ./.psqlrc:/root/.psqlrc:ro
-    - ./.bashrc:/root/.bashrc:ro
-    - ./.irbrc:/root/.irbrc:ro
-  environment: &backend_environment
-    <<: *env
-    RUBY_YJIT_ENABLE: 1
-    MALLOC_ARENA_MAX: 2
-    WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
-    BOOTSNAP_CACHE_DIR: /usr/local/bundle/_bootsnap
-    XDG_DATA_HOME: /app/tmp/caches
-    BINDING: 0.0.0.0
-    HISTFILE: /usr/local/hist/.bash_history
-    IRB_HISTFILE: /usr/local/hst/.irb_history
-    EDITOR: vi
-    WEBPACKER_DEV_SERVER_HOST: webpacker
-    YARN_CACHE_FOLDER: /app/node_modules/.yarn-cache
-
-services:
-  rails:
-    <<: *backend
-    command: bundle exec rails
-
-  web:
-    <<: *backend
-    command: bin/rails s
-    ports:
-      - '3000:3000'
-      - '35729:35729'
-    depends_on:
-      webpacker:
-        condition: service_started
-
-  webpacker:
-    <<: *app
-    command: bundle exec ./bin/webpack-dev-server
-    ports:
-      - '3035:3035'
-    volumes:
-      - ..:/app:cached
-      - bundle:/usr/local/bundle
-      - node_modules:/app/node_modules
-      - packs:/app/public/packs
-      - packs-test:/app/public/packs-test
-    environment:
-      <<: *env
-      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
-      YARN_CACHE_FOLDER: /app/node_modules/.yarn-cache
-
-volumes:
-  bundle:
-  history:
-  rails_cache:
-  assets:
-  assets_builds:
-  node_modules:
-  packs:
-  packs-test:
-```
+* [Rails 7.0.3 - Webpacker configuration file not found when running `rails webpacker:install` · Issue #123 · shakacode/shakapacker](https://github.com/shakacode/shakapacker/issues/123)
