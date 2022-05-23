@@ -5,7 +5,7 @@ x-app: &app
       RUBY_VERSION: '3.1.2'
       NODE_MAJOR: '16'
       YARN_VERSION: '1.22.17'
-  image: rails7_react_crud_tutorial:1.0.0
+  image: event-manager-tutorial:1.0.0
   environment: &env
     RAILS_ENV: ${RAILS_ENV:-development}
   tmpfs:
