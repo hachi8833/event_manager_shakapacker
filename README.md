@@ -1,49 +1,59 @@
 # README
 
-以下のチュートリアルを進めるのに便利なDocker環境です。
+This Docker setup would help you when you learn the following Rails+React tutorial:
 
-* [Rails 7とReactによるCRUDアプリ作成チュートリアル（翻訳）｜TechRacho by BPS株式会社](https://techracho.bpsinc.jp/?p=118031&preview=true#4-1)
+* [How to Create a CRUD App with Rails and React · James Hibbard](https://hibbard.eu/rails-react-crud-app/)
 
-## 必要なもの
 
-以下のインストールが必要です。ホストOS環境はmacOSで検証していますが、Linux、Windows（WSL2）でも動くと思います。
+The setup assumes you use **Shakapacker** for bundling React.
 
-* DockerとDocker Compose環境
-* dip↓
+## Requirement
+
+The followings are required on your local environment.
+
+* Docker and Docker Compose
+* dip
 
 [![bibendi/dip - GitHub](https://gh-card.dev/repos/bibendi/dip.svg)](https://github.com/bibendi/dip)
 
 
 ```sh
-# dipをインストールする
+# to install dip in your environment
 gem install dip
 ```
 
-## セットアップ
+## Setup
 
-以下を実行すればセットアップが完了します。Gemfileを上書きするかどうか尋ねられたらyを入力してください（READMEの上書きはどちらでも構いません）。
+Just perform the following on the root of the project. Answer 'y' when you see the prompt if Gemfile is overridden.
 
 ```sh
 dip provision
 ```
 
-チュートリアルの[Shakapackerの場合](https://techracho.bpsinc.jp/?p=118031&preview=true#4-2)のpackage.jsonのカスタマイズ部分からチュートリアルを開始できます。
+Then you can start the tutorial from the part of updating package.json in "Creating a New Rails App"/"Shakapacker",
 
-以下を実行すればRailsサーバーが起動します。
+
+## FYI
+
+You can start Rails server by:
 
 ```sh
-dip rails s
+dip dev
 ```
 
-チュートリアルの以後の操作では、`rails`や`npm`コマンドの冒頭に`dip`を付けるだけで同様に進められます（`touch`や`mkdir`などのシェルコマンドについては`dip`は不要です）。
+You can stop the Rails server with Ctrl-C.
+
+You can see the list of all available dip commands by:
+
+```sh
+dip ls
+```
+
+You can prefix `dip` to the `rails` or `npm` commands for shorthands, like:
 
 ```sh
 # 例
-dip yarn add prop-types
+dip npm i prop-types
 ```
 
-### 参考
-
-dip.ymlに記述されている`mv webpacker.yml config/`は、以下の問題を回避するための処置です。
-
-* [Rails 7.0.3 - Webpacker configuration file not found when running `rails webpacker:install` · Issue #123 · shakacode/shakapacker](https://github.com/shakacode/shakapacker/issues/123)
+(You don't need to prefix `dip` to shell commands such as `touch` or `mkdir`)
