@@ -83,8 +83,8 @@ interaction:
 provision:
   - dip bundle install
   - dip rails new . --skip-javascript –f --skip-git --no-skip-gemfile
-  - dip bundle add shakapacker --strict
+  - dip bundle add shakapacker --version "6.2.1" --strict
   - dip bundle install
-  - mv webpacker.yml config/
+  - dip bundle update shakapacker
   - dip rails webpacker:install
   - dip yarn add react react-dom @babel/preset-react
