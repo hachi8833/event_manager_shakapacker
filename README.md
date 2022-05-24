@@ -22,6 +22,8 @@ The followings are required on your local environment.
 gem install dip
 ```
 
+Ref: [Ruby on Whales: Dockerizing Ruby and Rails development — Martian Chronicles, Evil Martians’ team blog](https://evilmartians.com/chronicles/ruby-on-whales-docker-for-ruby-rails-development)
+
 ## Setup
 
 Just perform the following on the root of the project. Answer 'y' when you see the prompt if Gemfile is overridden.
