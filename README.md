@@ -40,7 +40,7 @@ Then you can start the tutorial from the part of updating package.json in "Creat
 You can start Rails server by:
 
 ```sh
-dip dev
+dip rails s
 ```
 
 You can stop the Rails server with Ctrl-C.
@@ -51,11 +51,21 @@ You can see the list of all available dip commands by:
 dip ls
 ```
 
-You can prefix `dip` to the `rails` or `npm` commands for shorthands, like:
+You can prefix `dip` to the `rails`, `bundle`, or `npm` commands for shorthands, like:
 
 ```sh
-# 例
+# example
 dip npm i prop-types
+```
+
+```sh
+# example
+dip bundle install
+```
+
+```sh
+# example
+dip rails about
 ```
 
 (You don't need to prefix `dip` to shell commands such as `touch` or `mkdir`)
